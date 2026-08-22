@@ -1,0 +1,58 @@
+import type { LeaveType } from '@/types/leave';
+
+export const LEAVE_TYPES: LeaveType[] = [
+  {
+    id: 'lt1',
+    name: 'Annual Leave',
+    totalDaysPerYear: 20,
+    color: '#3b82f6',
+    description: 'Paid annual vacation leave',
+    isPaid: true,
+    requiresDocument: false,
+  },
+  {
+    id: 'lt2',
+    name: 'Sick Leave',
+    totalDaysPerYear: 10,
+    color: '#ef4444',
+    description: 'Medical or illness-related leave',
+    isPaid: true,
+    requiresDocument: false,
+  },
+  {
+    id: 'lt3',
+    name: 'Casual Leave',
+    totalDaysPerYear: 7,
+    color: '#f59e0b',
+    description: 'Short personal or casual absence',
+    isPaid: true,
+    requiresDocument: false,
+  },
+  {
+    id: 'lt4',
+    name: 'Maternity Leave',
+    totalDaysPerYear: 90,
+    color: '#ec4899',
+    description: 'Paid maternity leave for new mothers',
+    isPaid: true,
+    requiresDocument: true,
+  },
+  {
+    id: 'lt5',
+    name: 'Unpaid Leave',
+    totalDaysPerYear: 30,
+    color: '#64748b',
+    description: 'Leave without pay for extended absence',
+    isPaid: false,
+    requiresDocument: false,
+  },
+  {
+    id: 'lt6',
+    name: 'Paternity Leave',
+    totalDaysPerYear: 10,
+    color: '#06b6d4',
+    description: 'Paid paternity leave for new fathers',
+    isPaid: true,
+    requiresDocument: true,
+  },
+];
