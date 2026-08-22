@@ -2,8 +2,6 @@
 
 A frontend-only HRM Attendance & Leave Management module. Next.js 16 (App Router), TypeScript, Tailwind CSS v4, Zustand. No backend — everything runs client-side against in-memory mock data.
 
-For what's done vs. outstanding, see [task-progress.md](task-progress.md). For working conventions, see [CLAUDE.md](CLAUDE.md).
-
 ## 1. Architecture overview
 
 ```
@@ -115,7 +113,7 @@ Pure functions, no React/store imports (except `attendanceCalculator.ts` taking 
 
 ## 6. Theming
 
-`store/themeStore.ts` (`theme: 'light' | 'dark'`, **default `'light'`**, persisted). Tailwind v4 class-based dark mode via `@custom-variant dark (&:where(.dark, .dark *));` in `app/globals.css`. `app/layout.tsx` runs a `next/script` (`strategy="beforeInteractive"`) to apply the persisted class before first paint (avoids a flash); `<html>` carries `suppressHydrationWarning` because of this — don't remove it. Every new literal color needs a light default paired with a `dark:` override (`bg-slate-100 dark:bg-slate-900/60` style) — see CLAUDE.md for the convention and gotchas (compound modifiers like `dark:hover:` need care with any scripted find/replace).
+`store/themeStore.ts` (`theme: 'light' | 'dark'`, **default `'light'`**, persisted). Tailwind v4 class-based dark mode via `@custom-variant dark (&:where(.dark, .dark *));` in `app/globals.css`. `app/layout.tsx` runs a `next/script` (`strategy="beforeInteractive"`) to apply the persisted class before first paint (avoids a flash); `<html>` carries `suppressHydrationWarning` because of this — don't remove it. Every new literal color needs a light default paired with a `dark:` override (`bg-slate-100 dark:bg-slate-900/60` style) — compound modifiers like `dark:hover:` need care with any scripted find/replace.
 
 ## 7. Extension plan — adding a new feature
 
@@ -125,7 +123,7 @@ Pure functions, no React/store imports (except `attendanceCalculator.ts` taking 
 4. **New cross-store effect** (like leave→attendance sync) → a store method the *other* store calls directly via `useOtherStore.getState().method(...)`; don't build a generic event bus for two consumers.
 5. **New page** → under `app/`, wrapped in `<AppLayout allowedRoles={[...]}>`. Decide up front whether it's admin-only, employee-only, or either.
 6. **New UI** → compose from `components/ui/` primitives where possible; pair every literal color for both themes.
-7. Update [task-progress.md](task-progress.md) if the feature maps to a tracked requirement.
+7. Update the internal task tracker if the feature maps to a tracked requirement.
 
 ## 8. Known limitations (frontend-only)
 

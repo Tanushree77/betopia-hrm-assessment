@@ -49,7 +49,6 @@ Pick any persona from the login screen:
 
 - [CODEBASE.md](CODEBASE.md) — architecture, data flow, state management, component map, and how to extend the app.
 - [SECURITY.md](SECURITY.md) — what's actually enforced, what isn't, and why (this is a frontend-only demo, not a production system).
-- [task-progress.md](task-progress.md) — requirement-by-requirement build status.
 
 ## Tech stack
 
