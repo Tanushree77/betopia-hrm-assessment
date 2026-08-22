@@ -36,7 +36,7 @@ export function EmployeeDashboard() {
   const myRequests = requests.filter(r => r.employeeId === employee.id);
 
   const handleCancel = (requestId: string) => {
-    cancelRequest(requestId, employee.id);
+    return cancelRequest(requestId, employee.id);
   };
 
   return (

@@ -19,7 +19,7 @@ export default function EmployeeLeaveRequestsPage() {
 
   const handleCancel = (requestId: string) => {
     if (employee) {
-      cancelRequest(requestId, employee.id);
+      return cancelRequest(requestId, employee.id);
     }
   };
 

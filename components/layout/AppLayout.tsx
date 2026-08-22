@@ -14,7 +14,7 @@ interface AppLayoutProps {
 
 const emptySubscribe = () => () => {};
 
-function homeRouteFor(role: UserRole) {
+export function homeRouteFor(role: UserRole) {
   return role === 'admin' ? '/admin/dashboard' : '/dashboard';
 }
 

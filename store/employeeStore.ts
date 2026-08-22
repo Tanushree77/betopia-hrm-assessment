@@ -25,6 +25,10 @@ export const useEmployeeStore = create<EmployeeStore>()((set, get) => ({
   addEmployee: (employee, actorRole) => {
     if (actorRole !== 'admin') return { success: false, error: 'Unauthorized.' };
 
+    if (get().employees.some(e => e.id === employee.id)) {
+      return { success: false, error: 'An employee with this id already exists.' };
+    }
+
     set(state => ({ employees: [employee, ...state.employees] }));
     return { success: true };
   },

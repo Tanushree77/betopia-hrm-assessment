@@ -2,7 +2,7 @@
 import { create } from 'zustand';
 import type { LeaveRequest, LeaveRequestStatus } from '@/types/leave';
 import { LEAVE_REQUESTS } from '@/data/leaveRequests';
-import { validateStatusTransition } from '@/lib/leaveCalculator';
+import { validateStatusTransition, validateLeaveRequest } from '@/lib/leaveCalculator';
 import { generateId } from '@/lib/utils';
 import { useAttendanceStore } from '@/store/attendanceStore';
 import { useEmployeeStore } from '@/store/employeeStore';
@@ -31,9 +31,21 @@ export const useLeaveStore = create<LeaveStore>()((set, get) => ({
   requests: [...LEAVE_REQUESTS],
   submitRequest: (req, requesterId) => {
     if (req.employeeId !== requesterId) return { success: false, error: 'Unauthorized.' };
-    if (!useEmployeeStore.getState().getById(requesterId)) {
+    const employee = useEmployeeStore.getState().getById(requesterId);
+    if (!employee) {
       return { success: false, error: 'Employee not found.' };
     }
+
+    const validationError = validateLeaveRequest({
+      employee,
+      startDate: req.startDate,
+      endDate: req.endDate,
+      leaveTypeId: req.leaveTypeId,
+      isHalfDayStart: req.isHalfDayStart,
+      isHalfDayEnd: req.isHalfDayEnd,
+      existingRequests: get().requests,
+    });
+    if (validationError) return { success: false, error: validationError };
 
     const id = generateId('lr');
     const newReq: LeaveRequest = {
@@ -67,7 +79,10 @@ export const useLeaveStore = create<LeaveStore>()((set, get) => ({
       ),
     }));
     if (status === 'Approved') {
-      useAttendanceStore.getState().syncLeaveRecords(req.employeeId, req.startDate, req.endDate, req.id, 'apply');
+      useAttendanceStore.getState().syncLeaveRecords(
+        req.employeeId, req.startDate, req.endDate, req.id, 'apply',
+        req.isHalfDayStart, req.isHalfDayEnd,
+      );
     } else if (status === 'Rejected' || status === 'Cancelled') {
       useAttendanceStore.getState().syncLeaveRecords(req.employeeId, req.startDate, req.endDate, req.id, 'revert');
     }

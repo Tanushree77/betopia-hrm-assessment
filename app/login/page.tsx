@@ -3,22 +3,20 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore, MOCK_USERS } from '@/store/authStore';
+import { homeRouteFor } from '@/components/layout/AppLayout';
 import { Avatar } from '@/components/ui/Avatar';
 import { Badge } from '@/components/ui/Badge';
 import { EMPLOYEES } from '@/data/employees';
+import type { UserRole } from '@/types/employee';
 import { Sparkles, ShieldCheck, UserCheck, ArrowRight } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
   const { login } = useAuthStore();
 
-  const handleSelectUser = (employeeId: string, role: string) => {
+  const handleSelectUser = (employeeId: string, role: UserRole) => {
     login(employeeId);
-    if (role === 'admin') {
-      router.push('/admin/dashboard');
-    } else {
-      router.push('/dashboard');
-    }
+    router.push(homeRouteFor(role));
   };
 
   return (

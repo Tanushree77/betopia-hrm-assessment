@@ -23,7 +23,7 @@ interface LeaveRequestListProps {
   isAdmin?: boolean;
   onApprove?: (id: string, note?: string) => ActionResult | void;
   onReject?: (id: string, note?: string) => ActionResult | void;
-  onCancel?: (id: string) => void;
+  onCancel?: (id: string) => ActionResult | void;
 }
 
 export function LeaveRequestList({
@@ -191,7 +191,11 @@ export function LeaveRequestList({
               variant="outline"
               onClick={e => {
                 e.stopPropagation();
-                onCancel(req.id);
+                setActionError(null);
+                const result = onCancel(req.id);
+                if (result && result.success === false) {
+                  setActionError(result.error || 'Failed to cancel this request.');
+                }
               }}
               leftIcon={<Ban className="w-3 h-3" />}
             >

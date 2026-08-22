@@ -28,6 +28,14 @@ export async function getDashboardStats(
   const onLeaveToday = EMPLOYEES.filter(e => e.status === 'On Leave').length;
   const pendingLeaveRequests = allRequests.filter(r => r.status === 'Pending').length;
 
+  const employeeById = new Map(EMPLOYEES.map(e => [e.id, e]));
+  const attendanceByEmployee = new Map<string, AttendanceRecord[]>();
+  for (const record of allAttendance) {
+    const list = attendanceByEmployee.get(record.employeeId);
+    if (list) list.push(record);
+    else attendanceByEmployee.set(record.employeeId, [record]);
+  }
+
   const departmentBreakdown = DEPARTMENTS.map(d => ({
     name: d.name,
     count: EMPLOYEES.filter(e => e.departmentId === d.id && e.status === 'Active').length,
@@ -41,7 +49,7 @@ export async function getDashboardStats(
   ];
   const attendanceTrend = months.map(({ month, year, m }) => {
     const summaries = activeEmployees.map(e =>
-      computeAttendanceSummary(e.id, year, m, allAttendance, settings),
+      computeAttendanceSummary(e.id, year, m, attendanceByEmployee.get(e.id) ?? [], settings),
     );
     const present = Math.round(summaries.reduce((s, x) => s + x.present + x.late, 0) / summaries.length);
     const absent  = Math.round(summaries.reduce((s, x) => s + x.absent, 0) / summaries.length);
@@ -50,7 +58,7 @@ export async function getDashboardStats(
   });
 
   const marSummaries = activeEmployees.map(e =>
-    computeAttendanceSummary(e.id, 2025, 3, allAttendance, settings),
+    computeAttendanceSummary(e.id, 2025, 3, attendanceByEmployee.get(e.id) ?? [], settings),
   );
   const attendanceRateToday = parseFloat(
     (marSummaries.reduce((s, x) => s + x.attendancePercentage, 0) / marSummaries.length).toFixed(1),
@@ -70,7 +78,7 @@ export async function getDashboardStats(
     .sort((a, b) => b.absent - a.absent)
     .slice(0, 5)
     .map(s => {
-      const emp = EMPLOYEES.find(e => e.id === s.employeeId)!;
+      const emp = employeeById.get(s.employeeId)!;
       return { employeeId: s.employeeId, name: `${emp.firstName} ${emp.lastName}`, absences: s.absent };
     })
     .filter(a => a.absences > 0);

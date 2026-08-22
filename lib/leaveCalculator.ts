@@ -12,7 +12,7 @@ export function calculateLeaveDays(
   const workingDays = countWorkingDays(startDate, endDate);
   if (workingDays === 0) return 0;
   let days = workingDays;
-  if (startDate === endDate && isHalfDayStart) {
+  if (startDate === endDate && (isHalfDayStart || isHalfDayEnd)) {
     return 0.5;
   }
   if (isHalfDayStart && isWorkingDay(startDate)) days -= 0.5;

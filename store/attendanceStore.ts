@@ -25,6 +25,8 @@ interface AttendanceStore {
     endDate: string,
     leaveRequestId: string,
     action: 'apply' | 'revert',
+    isHalfDayStart?: boolean,
+    isHalfDayEnd?: boolean,
   ) => void;
 }
 export const useAttendanceStore = create<AttendanceStore>()((set, get) => ({
@@ -48,7 +50,7 @@ export const useAttendanceStore = create<AttendanceStore>()((set, get) => ({
     return { success: true };
   },
 
-  syncLeaveRecords: (employeeId, startDate, endDate, leaveRequestId, action) => {
+  syncLeaveRecords: (employeeId, startDate, endDate, leaveRequestId, action, isHalfDayStart, isHalfDayEnd) => {
     if (action === 'revert') {
       set(state => ({
         records: state.records.filter(r => r.leaveRequestId !== leaveRequestId),
@@ -74,7 +76,10 @@ export const useAttendanceStore = create<AttendanceStore>()((set, get) => ({
         id: `att_leave_${employeeId}_${date.replace(/-/g, '')}`,
         employeeId,
         date,
-        status: 'Leave',
+        status:
+          (date === startDate && isHalfDayStart) || (date === endDate && isHalfDayEnd)
+            ? 'Half Day'
+            : 'Leave',
         leaveRequestId,
       }));
       return { records: [...kept, ...newRecords] };
