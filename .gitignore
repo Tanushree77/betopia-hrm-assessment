@@ -31,7 +31,6 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
-.env*
 
 # vercel
 .vercel
@@ -43,3 +42,7 @@ next-env.d.ts
 # internal planning notes
 task-progress.md
 CLAUDE.md
+
+# local tooling config
+.claude/
+config.bat
